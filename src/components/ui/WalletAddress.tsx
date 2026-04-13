@@ -1,4 +1,5 @@
-import { useState, Copy, Check } from 'react';
+import { useState } from 'react';
+import { Copy, Check } from 'lucide-react';
 
 export function WalletAddress({ address }: { address: string }) {
   const [copied, setCopied] = useState(false);
