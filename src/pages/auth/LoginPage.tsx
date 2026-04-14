@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -89,6 +89,11 @@ export default function LoginPage() {
           <Button variant="outline" className="w-full" disabled>
             <Wallet className="h-4 w-4 mr-2" /> Connect Wallet (Coming Soon)
           </Button>
+
+          <p className="text-center text-sm text-muted-foreground">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-accent hover:underline font-medium">Create one</Link>
+          </p>
         </CardContent>
       </Card>
     </div>

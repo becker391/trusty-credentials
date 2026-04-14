@@ -8,16 +8,23 @@ import { NotificationProvider } from "@/context/NotificationContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/auth/LoginPage";
+import SignupPage from "./pages/auth/SignupPage";
 import InstitutionDashboard from "./pages/institution/InstitutionDashboard";
 import IssueCredentialPage from "./pages/institution/IssueCredentialPage";
 import ManageCredentialsPage from "./pages/institution/ManageCredentialsPage";
+import TransactionsPage from "./pages/institution/TransactionsPage";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentWalletPage from "./pages/student/StudentWalletPage";
 import ShareCredentialPage from "./pages/student/ShareCredentialPage";
+import ActivityPage from "./pages/student/ActivityPage";
 import VerifierDashboard from "./pages/verifier/VerifierDashboard";
 import VerifyCredentialPage from "./pages/verifier/VerifyCredentialPage";
+import VerificationHistoryPage from "./pages/verifier/VerificationHistoryPage";
 import GovDashboard from "./pages/government/GovDashboard";
 import InstitutionsPage from "./pages/government/InstitutionsPage";
+import AnalyticsPage from "./pages/government/AnalyticsPage";
+import AlertsPage from "./pages/government/AlertsPage";
+import SettingsPage from "./pages/shared/SettingsPage";
 import CredentialDetailPage from "./pages/shared/CredentialDetailPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import type { UserRole } from "./types";
@@ -37,22 +44,32 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
       <Route path="/credential/:id" element={<CredentialDetailPage />} />
 
       <Route element={<AppLayout />}>
         <Route path="/institution/dashboard" element={<ProtectedRoute allowedRole="institution"><InstitutionDashboard /></ProtectedRoute>} />
         <Route path="/institution/issue" element={<ProtectedRoute allowedRole="institution"><IssueCredentialPage /></ProtectedRoute>} />
         <Route path="/institution/credentials" element={<ProtectedRoute allowedRole="institution"><ManageCredentialsPage /></ProtectedRoute>} />
+        <Route path="/institution/transactions" element={<ProtectedRoute allowedRole="institution"><TransactionsPage /></ProtectedRoute>} />
+        <Route path="/institution/settings" element={<ProtectedRoute allowedRole="institution"><SettingsPage /></ProtectedRoute>} />
 
         <Route path="/student/dashboard" element={<ProtectedRoute allowedRole="student"><StudentDashboard /></ProtectedRoute>} />
         <Route path="/student/wallet" element={<ProtectedRoute allowedRole="student"><StudentWalletPage /></ProtectedRoute>} />
         <Route path="/student/share" element={<ProtectedRoute allowedRole="student"><ShareCredentialPage /></ProtectedRoute>} />
+        <Route path="/student/activity" element={<ProtectedRoute allowedRole="student"><ActivityPage /></ProtectedRoute>} />
+        <Route path="/student/settings" element={<ProtectedRoute allowedRole="student"><SettingsPage /></ProtectedRoute>} />
 
         <Route path="/verifier/dashboard" element={<ProtectedRoute allowedRole="employer"><VerifierDashboard /></ProtectedRoute>} />
         <Route path="/verifier/verify" element={<ProtectedRoute allowedRole="employer"><VerifyCredentialPage /></ProtectedRoute>} />
+        <Route path="/verifier/history" element={<ProtectedRoute allowedRole="employer"><VerificationHistoryPage /></ProtectedRoute>} />
+        <Route path="/verifier/settings" element={<ProtectedRoute allowedRole="employer"><SettingsPage /></ProtectedRoute>} />
 
         <Route path="/government/dashboard" element={<ProtectedRoute allowedRole="government"><GovDashboard /></ProtectedRoute>} />
         <Route path="/government/institutions" element={<ProtectedRoute allowedRole="government"><InstitutionsPage /></ProtectedRoute>} />
+        <Route path="/government/analytics" element={<ProtectedRoute allowedRole="government"><AnalyticsPage /></ProtectedRoute>} />
+        <Route path="/government/alerts" element={<ProtectedRoute allowedRole="government"><AlertsPage /></ProtectedRoute>} />
+        <Route path="/government/settings" element={<ProtectedRoute allowedRole="government"><SettingsPage /></ProtectedRoute>} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

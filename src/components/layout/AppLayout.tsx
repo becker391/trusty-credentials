@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, LogOut, User, ChevronRight, Home } from 'lucide-react';
-import { GraduationCap, LayoutDashboard, FileText, Send, Wallet, Share2, Search, Building2, Settings } from 'lucide-react';
+import { GraduationCap, LayoutDashboard, FileText, Send, Wallet, Share2, Search, Building2, Settings, Activity, History, BarChart3, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from '@/components/NavLink';
 
@@ -16,23 +16,28 @@ const navByRole: Record<string, { label: string; path: string; icon: typeof Layo
     { label: 'Dashboard', path: '/institution/dashboard', icon: LayoutDashboard },
     { label: 'Issue Credential', path: '/institution/issue', icon: Send },
     { label: 'Manage Credentials', path: '/institution/credentials', icon: FileText },
-    { label: 'Settings', path: '#', icon: Settings },
+    { label: 'Transactions', path: '/institution/transactions', icon: Activity },
+    { label: 'Settings', path: '/institution/settings', icon: Settings },
   ],
   student: [
     { label: 'Dashboard', path: '/student/dashboard', icon: LayoutDashboard },
     { label: 'My Wallet', path: '/student/wallet', icon: Wallet },
     { label: 'Share Credential', path: '/student/share', icon: Share2 },
-    { label: 'Settings', path: '#', icon: Settings },
+    { label: 'Activity', path: '/student/activity', icon: Activity },
+    { label: 'Settings', path: '/student/settings', icon: Settings },
   ],
   employer: [
     { label: 'Dashboard', path: '/verifier/dashboard', icon: LayoutDashboard },
     { label: 'Verify Credential', path: '/verifier/verify', icon: Search },
-    { label: 'Settings', path: '#', icon: Settings },
+    { label: 'History', path: '/verifier/history', icon: History },
+    { label: 'Settings', path: '/verifier/settings', icon: Settings },
   ],
   government: [
     { label: 'Dashboard', path: '/government/dashboard', icon: LayoutDashboard },
     { label: 'Institutions', path: '/government/institutions', icon: Building2 },
-    { label: 'Settings', path: '#', icon: Settings },
+    { label: 'Analytics', path: '/government/analytics', icon: BarChart3 },
+    { label: 'Alerts', path: '/government/alerts', icon: AlertTriangle },
+    { label: 'Settings', path: '/government/settings', icon: Settings },
   ],
 };
 
