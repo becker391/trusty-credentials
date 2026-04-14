@@ -87,7 +87,7 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent to-secondary;
+    @apply text-accent;
   }
   .glow-card {
     @apply border border-accent/20 hover:border-accent/40 hover:shadow-[0_0_20px_hsl(168_100%_42%/0.15)] transition-all duration-300;

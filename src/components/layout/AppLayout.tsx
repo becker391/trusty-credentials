@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, LogOut, User, ChevronRight, Home } from 'lucide-react';
-import { GraduationCap, LayoutDashboard, FileText, Send, Wallet, Share2, Activity, Search, Building2, BarChart3, AlertTriangle, Settings } from 'lucide-react';
+import { GraduationCap, LayoutDashboard, FileText, Send, Wallet, Share2, Search, Building2, Settings } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from '@/components/NavLink';
 
@@ -58,7 +58,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <span className="font-bold text-lg">DACS</span>
         </div>
       </div>
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {items.map(item => {
           const isActive = location.pathname === item.path;
           return (
@@ -98,14 +98,14 @@ export function AppLayout() {
   const pathParts = location.pathname.split('/').filter(Boolean);
 
   return (
-    <div className="min-h-screen flex w-full">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 border-r border-border/50 bg-card flex-col shrink-0">
+    <div className="h-screen flex w-full overflow-hidden">
+      {/* Desktop Sidebar — fixed, doesn't scroll with content */}
+      <aside className="hidden lg:flex w-64 border-r border-border/50 bg-card flex-col shrink-0 h-screen sticky top-0">
         <SidebarContent />
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Navbar */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen">
+        {/* Top Navbar — fixed */}
         <header className="h-14 border-b border-border/50 flex items-center justify-between px-4 bg-card/50 backdrop-blur shrink-0">
           <div className="flex items-center gap-3">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -146,7 +146,7 @@ export function AppLayout() {
           </div>
         </header>
 
-        {/* Main Content */}
+        {/* Main Content — only this scrolls */}
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <Outlet />
         </main>
