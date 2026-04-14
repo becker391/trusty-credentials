@@ -2,7 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { RoleSelector } from '@/components/ui/RoleSelector';
+import { PublicLayout } from '@/components/layout/PublicLayout';
 import { GraduationCap, Shield, CheckCircle2, Link2, ArrowRight, Hash, Database, Search } from 'lucide-react';
+import heroImage from '@/assets/hero-blockchain.jpg';
+import credentialImage from '@/assets/credential-concept.jpg';
 
 const features = [
   { icon: GraduationCap, title: 'Issue', desc: 'Institutions issue tamper-proof digital credentials stored on the blockchain' },
@@ -21,38 +24,30 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Nav */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur sticky top-0 z-50">
-        <div className="container mx-auto flex items-center justify-between h-14 px-4">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-accent/20 flex items-center justify-center">
-              <GraduationCap className="h-4 w-4 text-accent" />
-            </div>
-            <span className="font-bold text-lg">DACS</span>
-          </div>
-          <Button onClick={() => navigate('/login')} className="bg-accent text-accent-foreground hover:bg-accent/90">
-            Get Started <ArrowRight className="h-4 w-4 ml-1" />
-          </Button>
+    <PublicLayout>
+      {/* Hero with background image */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroImage} alt="Blockchain academic credentials" width={1920} height={800} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-background/80" />
         </div>
-      </header>
-
-      {/* Hero */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-          <span className="text-gradient">Tamper-Proof Academic Credentials</span>
-          <br />on the Blockchain
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-          A decentralized platform where institutions issue, students own, and employers verify academic credentials — secured by blockchain technology.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Button size="lg" onClick={() => navigate('/login')} className="bg-accent text-accent-foreground hover:bg-accent/90">
-            Launch Demo <ArrowRight className="h-4 w-4 ml-1" />
-          </Button>
-          <Button size="lg" variant="outline" onClick={() => document.getElementById('roles')?.scrollIntoView({ behavior: 'smooth' })}>
-            Explore Roles
-          </Button>
+        <div className="relative container mx-auto px-4 py-24 md:py-32 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            Tamper-Proof Academic Credentials
+            <br />
+            <span className="text-accent">on the Blockchain</span>
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            A decentralized platform where institutions issue, students own, and employers verify academic credentials — secured by blockchain technology.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Button size="lg" onClick={() => navigate('/login')} className="bg-accent text-accent-foreground hover:bg-accent/90">
+              Launch Demo <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => document.getElementById('roles')?.scrollIntoView({ behavior: 'smooth' })}>
+              Explore Roles
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -73,26 +68,26 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="container mx-auto px-4 py-16">
+      {/* How it works with image */}
+      <section id="how-it-works" className="container mx-auto px-4 py-16">
         <h2 className="text-2xl font-bold text-center mb-10">How It Works</h2>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-          {steps.map((s, i) => (
-            <div key={s.label} className="flex items-center gap-4">
-              <div className="text-center">
-                <div className="mx-auto h-16 w-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-2 border border-accent/20">
-                  <s.icon className="h-8 w-8 text-accent" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div className="rounded-2xl overflow-hidden border border-border/50">
+            <img src={credentialImage} alt="Digital credential concept" loading="lazy" width={1200} height={600} className="w-full h-auto object-cover" />
+          </div>
+          <div className="flex flex-col gap-6">
+            {steps.map((s, i) => (
+              <div key={s.label} className="flex items-start gap-4">
+                <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
+                  <s.icon className="h-6 w-6 text-accent" />
                 </div>
-                <p className="font-semibold text-sm">{s.label}</p>
-                <p className="text-xs text-muted-foreground">{s.desc}</p>
+                <div>
+                  <p className="font-semibold">{`${i + 1}. ${s.label}`}</p>
+                  <p className="text-sm text-muted-foreground">{s.desc}</p>
+                </div>
               </div>
-              {i < steps.length - 1 && (
-                <div className="hidden md:block">
-                  <Link2 className="h-5 w-5 text-accent/40 rotate-90 md:rotate-0" />
-                </div>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
@@ -122,15 +117,20 @@ export default function LandingPage() {
         <RoleSelector />
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 bg-card/50">
-        <div className="container mx-auto px-4 py-8 text-center text-sm text-muted-foreground space-y-1">
-          <p className="font-semibold">DACS — Decentralized Academic Credential System</p>
-          <p>Author: John Muthui Gachuru | Student ID: J17-1358-2022</p>
-          <p>Machakos University, School of Engineering & Technology, CIT Dept</p>
-          <p>BSc Computer Science</p>
-        </div>
-      </footer>
-    </div>
+      {/* About */}
+      <section id="about" className="container mx-auto px-4 py-16">
+        <Card className="glow-card">
+          <CardContent className="p-8 text-center space-y-3">
+            <h2 className="text-2xl font-bold">About This Project</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              DACS is a final year project demonstrating how blockchain technology can revolutionize academic credential verification, eliminating fraud and empowering students with ownership of their achievements.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Developed by John Muthui Gachuru — Machakos University, BSc Computer Science
+            </p>
+          </CardContent>
+        </Card>
+      </section>
+    </PublicLayout>
   );
 }
