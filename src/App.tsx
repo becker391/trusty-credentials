@@ -6,9 +6,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { AppLayout } from "@/components/layout/AppLayout";
-import LandingPage from "./pages/LandingPage";
+import { PublicLayout } from "@/components/layout/PublicLayout";
+import HomePage from "./pages/public/HomePage";
+import HowItWorksPage from "./pages/public/HowItWorksPage";
+import VerifyPage from "./pages/public/VerifyPage";
+import AboutPage from "./pages/public/AboutPage";
 import LoginPage from "./pages/auth/LoginPage";
 import SignupPage from "./pages/auth/SignupPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import InstitutionDashboard from "./pages/institution/InstitutionDashboard";
 import IssueCredentialPage from "./pages/institution/IssueCredentialPage";
 import ManageCredentialsPage from "./pages/institution/ManageCredentialsPage";
@@ -42,11 +48,24 @@ function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode; 
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      {/* Public pages with shared layout */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/how-it-works" element={<HowItWorksPage />} />
+        <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/about" element={<AboutPage />} />
+      </Route>
+
+      {/* Auth pages */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+      {/* Public credential detail */}
       <Route path="/credential/:id" element={<CredentialDetailPage />} />
 
+      {/* Protected dashboard routes */}
       <Route element={<AppLayout />}>
         <Route path="/institution/dashboard" element={<ProtectedRoute allowedRole="institution"><InstitutionDashboard /></ProtectedRoute>} />
         <Route path="/institution/issue" element={<ProtectedRoute allowedRole="institution"><IssueCredentialPage /></ProtectedRoute>} />

@@ -2,8 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { RoleSelector } from '@/components/ui/RoleSelector';
-import { PublicLayout } from '@/components/layout/PublicLayout';
-import { GraduationCap, Shield, CheckCircle2, Link2, ArrowRight, Hash, Database, Search } from 'lucide-react';
+import { GraduationCap, Shield, CheckCircle2, ArrowRight, Hash, Database, Search } from 'lucide-react';
 import heroImage from '@/assets/hero-blockchain.jpg';
 import credentialImage from '@/assets/credential-concept.jpg';
 
@@ -20,12 +19,12 @@ const steps = [
   { icon: Search, label: 'Verify', desc: 'Instant verification' },
 ];
 
-export default function LandingPage() {
+export default function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <PublicLayout>
-      {/* Hero with background image */}
+    <>
+      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img src={heroImage} alt="Blockchain academic credentials" width={1920} height={800} className="w-full h-full object-cover" />
@@ -44,8 +43,8 @@ export default function LandingPage() {
             <Button size="lg" onClick={() => navigate('/login')} className="bg-accent text-accent-foreground hover:bg-accent/90">
               Launch Demo <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
-            <Button size="lg" variant="outline" onClick={() => document.getElementById('roles')?.scrollIntoView({ behavior: 'smooth' })}>
-              Explore Roles
+            <Button size="lg" variant="outline" onClick={() => navigate('/how-it-works')}>
+              How It Works
             </Button>
           </div>
         </div>
@@ -65,29 +64,6 @@ export default function LandingPage() {
               </CardContent>
             </Card>
           ))}
-        </div>
-      </section>
-
-      {/* How it works with image */}
-      <section id="how-it-works" className="container mx-auto px-4 py-16">
-        <h2 className="text-2xl font-bold text-center mb-10">How It Works</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div className="rounded-2xl overflow-hidden border border-border/50">
-            <img src={credentialImage} alt="Digital credential concept" loading="lazy" width={1200} height={600} className="w-full h-auto object-cover" />
-          </div>
-          <div className="flex flex-col gap-6">
-            {steps.map((s, i) => (
-              <div key={s.label} className="flex items-start gap-4">
-                <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
-                  <s.icon className="h-6 w-6 text-accent" />
-                </div>
-                <div>
-                  <p className="font-semibold">{`${i + 1}. ${s.label}`}</p>
-                  <p className="text-sm text-muted-foreground">{s.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -111,26 +87,11 @@ export default function LandingPage() {
       </section>
 
       {/* Role Selector */}
-      <section id="roles" className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-4 py-16">
         <h2 className="text-2xl font-bold text-center mb-2">Enter the Demo</h2>
         <p className="text-center text-muted-foreground mb-8">Select a role to explore the platform</p>
         <RoleSelector />
       </section>
-
-      {/* About */}
-      <section id="about" className="container mx-auto px-4 py-16">
-        <Card className="glow-card">
-          <CardContent className="p-8 text-center space-y-3">
-            <h2 className="text-2xl font-bold">About This Project</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              DACS is a final year project demonstrating how blockchain technology can revolutionize academic credential verification, eliminating fraud and empowering students with ownership of their achievements.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Developed by John Muthui Gachuru — Machakos University, BSc Computer Science
-            </p>
-          </CardContent>
-        </Card>
-      </section>
-    </PublicLayout>
+    </>
   );
 }
