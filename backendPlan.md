@@ -488,21 +488,60 @@ backend/
 
 ## 16. Frontend Migration (zero page changes)
 
-Replace each function in `src/services/*` with a real `fetch` call. Example:
+The frontend already routes **all** API access through `src/services/*`, which delegates to `src/api/mockApi.ts`. To go live, replace each function body with a real `fetch` — page components stay untouched.
+
+### 16.1 Wired service surface (current contract)
+
+`authService` — fully wired to mock API, ready to swap:
+
+| Service function | Mock backing | Target endpoint |
+|---|---|---|
+| `login(email, password, role)` | `mockLogin` | `POST /auth/login` |
+| `signup({ name, email, password, role, institution? })` | `mockSignup` | `POST /auth/signup` |
+| `getCurrentUser()` | `mockGetCurrentUser` | `GET /auth/me` |
+| `logout()` | `mockLogout` | `POST /auth/logout` |
+| `requestPasswordReset(email)` | `mockRequestPasswordReset` | `POST /auth/forgot-password` |
+| `resetPassword(token, newPassword)` | `mockResetPassword` | `POST /auth/reset-password` |
+
+The same pattern applies to `credentialService`, `verificationService`, `institutionService`, `dashboardService`, and `notificationService` — every page calls these wrappers exclusively, never `mockApi` directly.
+
+### 16.2 Example swap
 
 ```ts
-// src/services/credentialService.ts
+// src/services/authService.ts (production)
 import { api } from '@/lib/http';
-import type { Credential } from '@/types';
+import type { User, UserRole } from '@/types';
 
-export const getAllCredentials = (filters?) =>
-  api.get<Credential[]>('/credentials', { params: filters });
+export const login = (email: string, password: string, role: UserRole) =>
+  api.post<User>('/auth/login', { email, password, role });
 
+export const signup = (data: { name: string; email: string; password: string; role: UserRole; institution?: string }) =>
+  api.post<User>('/auth/signup', data);
+
+export const requestPasswordReset = (email: string) =>
+  api.post<{ sent: boolean; email: string }>('/auth/forgot-password', { email });
+
+export const resetPassword = (token: string, newPassword: string) =>
+  api.post<{ success: boolean }>('/auth/reset-password', { token, newPassword });
+```
+
+```ts
+// src/services/credentialService.ts (production)
 export const issueCredential = (data: Partial<Credential>) =>
   api.post<Credential>('/credentials', data, {
     headers: { 'Idempotency-Key': crypto.randomUUID() },
   });
 ```
+
+### 16.3 Server-side responsibilities the mocks intentionally skip
+
+When implementing the real backend, the following must be added — the frontend already tolerates these as opaque server behaviors:
+
+- **Password hashing** (Argon2id) on `signup` and `reset-password`.
+- **Email delivery** for `forgot-password` (token-bearing link to `/reset-password?token=...`). The frontend already reads `?token=` from the URL.
+- **Token issuance & rotation** on `login` / `refresh` (httpOnly cookies preferred).
+- **Account-existence non-disclosure** on `forgot-password` (mock already returns success unconditionally — keep that behavior).
+- **Rate limiting** on all `/auth/*` endpoints (5 req/min/IP).
 
 `AuthContext` keeps its shape — only `authService` changes. Notifications swap polling for the WebSocket channel.
 
