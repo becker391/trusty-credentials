@@ -80,7 +80,7 @@ export function PublicLayout({ children }: { children?: React.ReactNode }) {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><button onClick={() => navigate('/login')} className="hover:text-foreground transition-colors">Sign In</button></li>
                 <li><button onClick={() => navigate('/signup')} className="hover:text-foreground transition-colors">Create Account</button></li>
-                <li><span className="cursor-default">Documentation</span></li>
+                <li><button onClick={() => navigate('/contact')} className="hover:text-foreground transition-colors">Contact</button></li>
               </ul>
             </div>
           </div>
@@ -88,9 +88,9 @@ export function PublicLayout({ children }: { children?: React.ReactNode }) {
           <div className="border-t border-border/50 mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <p>© {new Date().getFullYear()} DACS — Decentralized Academic Credential System. All rights reserved.</p>
             <div className="flex items-center gap-4">
-              <span>Privacy Policy</span>
-              <span>Terms of Service</span>
-              <span>Contact</span>
+              <button onClick={() => navigate('/privacy')} className="hover:text-foreground transition-colors">Privacy Policy</button>
+              <button onClick={() => navigate('/terms')} className="hover:text-foreground transition-colors">Terms of Service</button>
+              <button onClick={() => navigate('/contact')} className="hover:text-foreground transition-colors">Contact</button>
             </div>
           </div>
         </div>
