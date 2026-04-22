@@ -7,9 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, LogOut, User, ChevronRight, Home } from 'lucide-react';
-import { GraduationCap, LayoutDashboard, FileText, Send, Wallet, Share2, Search, Building2, Settings, Activity, History, BarChart3, AlertTriangle } from 'lucide-react';
+import { LayoutDashboard, FileText, Send, Wallet, Share2, Search, Building2, Settings, Activity, History, BarChart3, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from '@/components/NavLink';
+import dacsLogo from '@/assets/dacs-logo.png';
 
 const navByRole: Record<string, { label: string; path: string; icon: typeof LayoutDashboard }[]> = {
   institution: [
@@ -57,9 +58,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border/50">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-accent/20 flex items-center justify-center">
-            <GraduationCap className="h-4 w-4 text-accent" />
-          </div>
+          <img src={dacsLogo} alt="DACS logo" width={32} height={32} className="h-8 w-8" />
           <span className="font-bold text-lg">DACS</span>
         </div>
       </div>
