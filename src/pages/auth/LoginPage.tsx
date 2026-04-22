@@ -49,7 +49,14 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md glow-card">
-        <CardHeader className="text-center">
+        <CardHeader className="text-center relative">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute left-4 top-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back
+          </button>
           <div className="mx-auto h-12 w-12 rounded-xl bg-accent/20 flex items-center justify-center mb-3">
             <GraduationCap className="h-6 w-6 text-accent" />
           </div>

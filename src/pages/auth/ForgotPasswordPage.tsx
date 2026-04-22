@@ -1,16 +1,18 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { GraduationCap, ArrowLeft, Loader2, Mail, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { requestPasswordReset } from '@/services/authService';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,16 +21,28 @@ export default function ForgotPasswordPage() {
       return;
     }
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setSent(true);
-    setLoading(false);
-    toast.success('Password reset link sent');
+    try {
+      await requestPasswordReset(email);
+      setSent(true);
+      toast.success('Password reset link sent');
+    } catch {
+      toast.error('Could not send reset link');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md glow-card">
-        <CardHeader className="text-center">
+        <CardHeader className="text-center relative">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute left-4 top-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back
+          </button>
           <div className="mx-auto h-12 w-12 rounded-xl bg-accent/20 flex items-center justify-center mb-3">
             <GraduationCap className="h-6 w-6 text-accent" />
           </div>
