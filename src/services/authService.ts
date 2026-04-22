@@ -1,4 +1,11 @@
-import { mockLogin, mockGetCurrentUser, mockLogout } from '@/api/mockApi';
+import {
+  mockLogin,
+  mockGetCurrentUser,
+  mockLogout,
+  mockSignup,
+  mockRequestPasswordReset,
+  mockResetPassword,
+} from '@/api/mockApi';
 import type { User, UserRole } from '@/types';
 
 export const login = (email: string, password: string, role: UserRole): Promise<User> =>
@@ -9,3 +16,17 @@ export const getCurrentUser = (): Promise<User | null> =>
 
 export const logout = (): Promise<void> =>
   mockLogout();
+
+export const signup = (data: {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  institution?: string;
+}): Promise<User> => mockSignup(data);
+
+export const requestPasswordReset = (email: string): Promise<{ sent: boolean; email: string }> =>
+  mockRequestPasswordReset(email);
+
+export const resetPassword = (token: string, newPassword: string): Promise<{ success: boolean }> =>
+  mockResetPassword(token, newPassword);

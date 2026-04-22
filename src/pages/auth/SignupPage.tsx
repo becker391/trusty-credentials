@@ -4,10 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { GraduationCap, Wallet, Loader2, ArrowRight } from 'lucide-react';
+import { GraduationCap, Wallet, Loader2, ArrowRight, ArrowLeft } from 'lucide-react';
 import type { UserRole } from '@/types';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { signup } from '@/services/authService';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -34,16 +35,28 @@ export default function SignupPage() {
       return;
     }
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    toast.success('Account created successfully! Please sign in.');
-    navigate('/login');
-    setLoading(false);
+    try {
+      await signup({ name, email, password, role, institution: institution || undefined });
+      toast.success('Account created successfully! Please sign in.');
+      navigate('/login');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Signup failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 py-16 bg-background">
       <Card className="w-full max-w-lg glow-card">
-        <CardHeader className="text-center">
+        <CardHeader className="text-center relative">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute left-4 top-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back
+          </button>
           <div className="mx-auto h-12 w-12 rounded-xl bg-accent/20 flex items-center justify-center mb-3">
             <GraduationCap className="h-6 w-6 text-accent" />
           </div>

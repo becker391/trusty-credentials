@@ -95,6 +95,37 @@ export async function mockLogout(): Promise<void> {
   currentUser = null;
 }
 
+export async function mockSignup(data: { name: string; email: string; password: string; role: UserRole; institution?: string }): Promise<User> {
+  await delay(900);
+  if (users.some(u => u.email.toLowerCase() === data.email.toLowerCase())) {
+    throw new Error('An account with this email already exists');
+  }
+  const newUser: User & { password: string } = {
+    id: 'user-' + (users.length + 1),
+    name: data.name,
+    email: data.email,
+    role: data.role,
+    walletAddress: '0x' + randomHash().slice(0, 40),
+    avatarUrl: '',
+    institution: data.institution,
+    password: data.password,
+  };
+  users.push(newUser);
+  const { password: _, ...safe } = newUser;
+  return safe;
+}
+
+export async function mockRequestPasswordReset(email: string): Promise<{ sent: boolean; email: string }> {
+  await delay(1200);
+  return { sent: true, email };
+}
+
+export async function mockResetPassword(token: string, newPassword: string): Promise<{ success: boolean }> {
+  await delay(1200);
+  if (!token || newPassword.length < 6) throw new Error('Invalid reset token or password');
+  return { success: true };
+}
+
 // Credentials
 export async function mockGetAllCredentials(filters?: { status?: string; course?: string; institutionId?: string }): Promise<Credential[]> {
   await delay();

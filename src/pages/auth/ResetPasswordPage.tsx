@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { GraduationCap, Loader2, Lock, CheckCircle2 } from 'lucide-react';
+import { GraduationCap, Loader2, Lock, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { resetPassword } from '@/services/authService';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -13,6 +14,8 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token') || 'demo-reset-token';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,10 +28,15 @@ export default function ResetPasswordPage() {
       return;
     }
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setDone(true);
-    setLoading(false);
-    toast.success('Password updated successfully');
+    try {
+      await resetPassword(token, password);
+      setDone(true);
+      toast.success('Password updated successfully');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Reset failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (done) {
@@ -55,7 +63,14 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md glow-card">
-        <CardHeader className="text-center">
+        <CardHeader className="text-center relative">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute left-4 top-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back
+          </button>
           <div className="mx-auto h-12 w-12 rounded-xl bg-accent/20 flex items-center justify-center mb-3">
             <GraduationCap className="h-6 w-6 text-accent" />
           </div>
