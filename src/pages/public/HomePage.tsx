@@ -62,9 +62,9 @@ export default function HomePage() {
             alt="Blockchain-secured academic certificate"
             width={1920}
             height={1080}
-            className="w-full h-full object-cover opacity-40"
+            className="w-full h-full object-cover opacity-80"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
         </div>
         <div className="relative container mx-auto px-4 py-24 md:py-36">
           <div className="max-w-3xl mx-auto text-center">
@@ -83,13 +83,10 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
                 size="lg"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/verify')}
                 className="bg-accent text-accent-foreground hover:bg-accent/90"
               >
-                Launch Demo <ArrowRight className="h-4 w-4 ml-1" />
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate('/verify')}>
-                Verify a Credential
+                Verify a Credential <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
           </div>
@@ -116,25 +113,6 @@ export default function HomePage() {
               </CardContent>
             </Card>
           ))}
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="border-y border-border/50 bg-card/40">
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-              { val: '566+', label: 'Credentials Issued' },
-              { val: '3', label: 'Partner Institutions' },
-              { val: '1,200+', label: 'Verifications' },
-              { val: '23', label: 'Forgeries Prevented' },
-            ].map((s) => (
-              <div key={s.label}>
-                <p className="text-3xl md:text-4xl font-bold text-accent">{s.val}</p>
-                <p className="text-sm text-muted-foreground mt-1">{s.label}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
