@@ -81,9 +81,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
       <div className="p-4 border-t border-border/50 text-[10px] text-muted-foreground leading-relaxed">
-        <p>DACS — Decentralized Academic Credential System</p>
-        <p>John Muthui Gachuru | J17-1358-2022</p>
-        <p>Machakos University — CIT Dept</p>
+        <p>© {new Date().getFullYear()} DACS</p>
+        <p>Decentralized Academic Credential System</p>
       </div>
     </div>
   );
@@ -104,13 +103,13 @@ export function AppLayout() {
 
   return (
     <div className="h-screen flex w-full overflow-hidden">
-      {/* Desktop Sidebar — fixed, doesn't scroll with content */}
+      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-64 border-r border-border/50 bg-card flex-col shrink-0 h-screen sticky top-0">
         <SidebarContent />
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen">
-        {/* Top Navbar — fixed */}
+        {/* Top Navbar */}
         <header className="h-14 border-b border-border/50 flex items-center justify-between px-4 bg-card/50 backdrop-blur shrink-0">
           <div className="flex items-center gap-3">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -151,7 +150,7 @@ export function AppLayout() {
           </div>
         </header>
 
-        {/* Main Content — only this scrolls */}
+        {/* Main Content */}
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <Outlet />
         </main>
