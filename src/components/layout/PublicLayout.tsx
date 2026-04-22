@@ -1,6 +1,7 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { GraduationCap, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import dacsLogo from '@/assets/dacs-logo.png';
 
 const navTabs = [
   { label: 'Home', path: '/' },
@@ -19,9 +20,7 @@ export function PublicLayout({ children }: { children?: React.ReactNode }) {
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between h-16 px-4">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="h-9 w-9 rounded-lg bg-accent/20 flex items-center justify-center">
-              <GraduationCap className="h-5 w-5 text-accent" />
-            </div>
+            <img src={dacsLogo} alt="DACS logo" width={36} height={36} className="h-9 w-9" />
             <span className="font-bold text-xl">DACS</span>
           </div>
           <nav className="hidden md:flex items-center gap-1">
@@ -56,9 +55,7 @@ export function PublicLayout({ children }: { children?: React.ReactNode }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2 space-y-3">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-accent/20 flex items-center justify-center">
-                  <GraduationCap className="h-4 w-4 text-accent" />
-                </div>
+                <img src={dacsLogo} alt="DACS logo" width={32} height={32} loading="lazy" className="h-8 w-8" />
                 <span className="font-bold text-lg">DACS</span>
               </div>
               <p className="text-sm text-muted-foreground max-w-md">
