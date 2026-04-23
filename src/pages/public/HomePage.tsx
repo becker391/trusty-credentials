@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { RoleSelector } from '@/components/ui/RoleSelector';
+
 import {
   GraduationCap,
   Shield,
@@ -167,15 +167,6 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Role Selector */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-3">Enter the demo</h2>
-          <p className="text-muted-foreground">Select a role to explore the platform.</p>
-        </div>
-        <RoleSelector />
       </section>
 
       {/* CTA */}
