@@ -169,15 +169,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Role Selector */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-3">Enter the demo</h2>
-          <p className="text-muted-foreground">Select a role to explore the platform.</p>
-        </div>
-        <RoleSelector />
-      </section>
-
       {/* CTA */}
       <section className="border-t border-border/50">
         <div className="container mx-auto px-4 py-16 text-center">
