@@ -102,8 +102,14 @@ export default function SettingsPage() {
           <div className="space-y-2">
             <Label>Change Password</Label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input type="password" placeholder="Current password" />
-              <Input type="password" placeholder="New password" />
+              <div className="space-y-1">
+                <Label htmlFor="current-password" className="text-xs text-muted-foreground">Current Password</Label>
+                <Input id="current-password" type="password" placeholder="Current password" />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="new-password" className="text-xs text-muted-foreground">New Password</Label>
+                <Input id="new-password" type="password" placeholder="New password" />
+              </div>
             </div>
           </div>
         </CardContent>
