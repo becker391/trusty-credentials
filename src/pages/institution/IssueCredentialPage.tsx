@@ -118,16 +118,25 @@ export default function IssueCredentialPage() {
         <Card className="glow-card">
           <CardHeader><CardTitle className="text-sm">Step 2 — Credential Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <Select value={form.certificateType} onValueChange={v => update('certificateType', v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Degree">Degree</SelectItem>
-                <SelectItem value="Diploma">Diploma</SelectItem>
-                <SelectItem value="Certificate">Certificate</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input value={user?.institution || 'Massachusetts Institute of Technology'} disabled />
-            <Input placeholder="Issuer Name" value={form.issuerName} onChange={e => update('issuerName', e.target.value)} />
+            <div className="space-y-2">
+              <Label htmlFor="certificateType">Certificate Type</Label>
+              <Select value={form.certificateType} onValueChange={v => update('certificateType', v)}>
+                <SelectTrigger id="certificateType"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Degree">Degree</SelectItem>
+                  <SelectItem value="Diploma">Diploma</SelectItem>
+                  <SelectItem value="Certificate">Certificate</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="institutionName">Institution</Label>
+              <Input id="institutionName" value={user?.institution || 'Massachusetts Institute of Technology'} disabled />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="issuerName">Issuer Name</Label>
+              <Input id="issuerName" placeholder="e.g. Office of the Registrar" value={form.issuerName} onChange={e => update('issuerName', e.target.value)} />
+            </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setStep(1)}><ArrowLeft className="h-4 w-4 mr-1" /> Back</Button>
               <Button onClick={() => setStep(3)} className="bg-accent text-accent-foreground hover:bg-accent/90">
