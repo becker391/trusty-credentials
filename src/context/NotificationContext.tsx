@@ -32,19 +32,33 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(notifReducer, { notifications: [], unreadCount: 0 });
-  const { user } = useAuth();
+  const auth = useAuth();
+  const user = auth?.user;
 
   const refresh = useCallback(async () => {
     if (!user) return;
-    const notifs = await notificationService.getNotifications(user.id);
-    dispatch({ type: 'SET', notifications: notifs });
+    try {
+      const notifs = await notificationService.getNotifications(user.id);
+      dispatch({ type: 'SET', notifications: notifs });
+    } catch (error) {
+      // Silently handle errors for now
+      console.warn('Failed to fetch notifications:', error);
+    }
   }, [user]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => { 
+    if (user) {
+      refresh(); 
+    }
+  }, [refresh, user]);
 
   const markRead = useCallback(async (id: string) => {
-    await notificationService.markNotificationRead(id);
-    dispatch({ type: 'MARK_READ', id });
+    try {
+      await notificationService.markNotificationRead(id);
+      dispatch({ type: 'MARK_READ', id });
+    } catch (error) {
+      console.warn('Failed to mark notification as read:', error);
+    }
   }, []);
 
   return (

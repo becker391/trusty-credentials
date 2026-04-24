@@ -1,4 +1,4 @@
-import { mockGetInstitutions, mockGetInstitutionById } from '@/api/mockApi';
+import { api } from '@/api';
 
-export const getInstitutions = () => mockGetInstitutions();
-export const getInstitutionById = (id: string) => mockGetInstitutionById(id);
+export const getInstitutions = () => api.institutions.getInstitutions();
+export const getInstitutionById = (id: string) => api.institutions.getInstitution(id);

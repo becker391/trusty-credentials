@@ -24,8 +24,23 @@ export default function ManageCredentialsPage() {
   const [revokeTarget, setRevokeTarget] = useState<Credential | null>(null);
 
   useEffect(() => {
-    credentialService.getCredentialsByInstitution(user?.institution === 'Machakos University' ? 'inst-1' : 'inst-2')
-      .then(creds => { setCredentials(creds); setFiltered(creds); setLoading(false); });
+    if (user?.institutionId) {
+      credentialService.getCredentialsByInstitution(user.institutionId)
+        .then(response => { 
+          const creds = response.data || [];
+          setCredentials(creds); 
+          setFiltered(creds); 
+          setLoading(false); 
+        })
+        .catch(error => {
+          console.error('Failed to fetch credentials:', error);
+          setCredentials([]);
+          setFiltered([]);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
   }, [user]);
 
   useEffect(() => {

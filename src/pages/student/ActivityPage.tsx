@@ -24,38 +24,50 @@ export default function ActivityPage() {
 
   useEffect(() => {
     async function load() {
-      const [creds, notifs] = await Promise.all([
-        credentialService.getCredentialsByStudent(user?.id || 'user-2'),
-        notificationService.getNotifications(user?.id || 'user-2'),
-      ]);
+      if (!user?.id) {
+        setLoading(false);
+        return;
+      }
 
-      const items: ActivityItem[] = [];
+      try {
+        const [credsResponse, notifs] = await Promise.all([
+          credentialService.getCredentialsByStudent(user.id),
+          notificationService.getNotifications(user.id),
+        ]);
 
-      creds.forEach(c => {
-        items.push({
-          id: `cred-${c.id}`,
-          icon: FileText,
-          title: `Credential Issued: ${c.course}`,
-          description: `${c.certificateType} from ${c.institutionName} — Grade: ${c.grade}`,
-          timestamp: c.issueDate,
-          color: 'text-accent',
+        const creds = credsResponse.data || [];
+        const items: ActivityItem[] = [];
+
+        creds.forEach(c => {
+          items.push({
+            id: `cred-${c.id}`,
+            icon: FileText,
+            title: `Credential Issued: ${c.course}`,
+            description: `${c.certificateType} from ${c.institutionName} — Grade: ${c.grade}`,
+            timestamp: c.issueDate,
+            color: 'text-accent',
+          });
         });
-      });
 
-      notifs.forEach(n => {
-        items.push({
-          id: `notif-${n.id}`,
-          icon: n.type === 'success' ? CheckCircle2 : Bell,
-          title: n.title,
-          description: n.message,
-          timestamp: n.createdAt,
-          color: n.type === 'success' ? 'text-success' : 'text-accent',
+        (notifs || []).forEach(n => {
+          items.push({
+            id: `notif-${n.id}`,
+            icon: n.type === 'success' ? CheckCircle2 : Bell,
+            title: n.title,
+            description: n.message,
+            timestamp: n.createdAt,
+            color: n.type === 'success' ? 'text-success' : 'text-accent',
+          });
         });
-      });
 
-      items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-      setActivities(items);
-      setLoading(false);
+        items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+        setActivities(items);
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to load activity data:', error);
+        setActivities([]);
+        setLoading(false);
+      }
     }
     load();
   }, [user]);

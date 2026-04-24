@@ -16,15 +16,25 @@ export default function StudentWalletPage() {
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    credentialService.getCredentialsByStudent(user?.id || 'user-2').then(creds => {
-      setCredentials(creds);
+    if (user?.id) {
+      credentialService.getCredentialsByStudent(user.id)
+        .then(response => {
+          setCredentials(response.data || []);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Failed to fetch student credentials:', error);
+          setCredentials([]);
+          setLoading(false);
+        });
+    } else {
       setLoading(false);
-    });
+    }
   }, [user]);
 
   if (loading) return <LoadingSpinner />;
 
-  const filtered = filter === 'all' ? credentials : credentials.filter(c => c.status === filter);
+  const filtered = filter === 'all' ? credentials : (credentials || []).filter(c => c.status === filter);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -39,9 +49,9 @@ export default function StudentWalletPage() {
         </Tabs>
       </div>
 
-      {filtered.length === 0 ? <EmptyState /> : (
+      {(filtered || []).length === 0 ? <EmptyState /> : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(cred => (
+          {(filtered || []).map(cred => (
             <CredentialCard key={cred.id} credential={cred} onClick={() => setSelected(cred)} />
           ))}
         </div>

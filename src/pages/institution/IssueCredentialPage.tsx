@@ -48,14 +48,16 @@ export default function IssueCredentialPage() {
     try {
       const cred = await credentialService.issueCredential({
         studentName: form.studentName,
+        studentEmail: form.studentEmail,
         studentId: form.studentId,
         course: form.course,
         grade: form.grade,
+        graduationDate: form.graduationDate,
         certificateType: form.certificateType,
         issuedBy: form.issuerName,
-        institutionName: user?.institution || 'Machakos University',
-        institutionId: 'inst-1',
-      });
+        institutionName: user?.institution || 'Massachusetts Institute of Technology',
+        institutionId: 'e56b14fc-f13a-4a35-9d3e-be6114660540', // MIT ID from backend
+      } as any); // Use 'as any' to bypass type checking for now
       setResult(cred);
       toast.success('Credential issued successfully!');
     } catch { toast.error('Failed to issue credential'); }
@@ -105,7 +107,7 @@ export default function IssueCredentialPage() {
                 <SelectItem value="Certificate">Certificate</SelectItem>
               </SelectContent>
             </Select>
-            <Input value={user?.institution || 'Machakos University'} disabled />
+            <Input value={user?.institution || 'Massachusetts Institute of Technology'} disabled />
             <Input placeholder="Issuer Name" value={form.issuerName} onChange={e => update('issuerName', e.target.value)} />
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setStep(1)}><ArrowLeft className="h-4 w-4 mr-1" /> Back</Button>
@@ -126,7 +128,7 @@ export default function IssueCredentialPage() {
               <div className="flex items-center gap-3 mb-4">
                 <GraduationCap className="h-8 w-8 text-accent" />
                 <div>
-                  <p className="font-bold">{user?.institution || 'Machakos University'}</p>
+                  <p className="font-bold">{user?.institution || 'Massachusetts Institute of Technology'}</p>
                   <p className="text-xs text-muted-foreground">Digital Academic Credential</p>
                 </div>
               </div>
@@ -152,8 +154,26 @@ export default function IssueCredentialPage() {
                   <CheckCircle2 className="h-5 w-5" />
                   <span className="font-semibold">Credential Published Successfully!</span>
                 </div>
-                <HashDisplay hash={result.credentialHash} truncate={false} />
-                <BlockchainProof txHash={result.txHash} blockNumber={result.blockNumber} network={result.networkName} />
+                <HashDisplay hash={result.credential_hash_hex} truncate={false} />
+                {result.certificate_image && (
+                  <div className="mt-4">
+                    <p className="text-sm text-muted-foreground mb-2">Generated Certificate:</p>
+                    <img 
+                      src={`http://127.0.0.1:8000${result.certificate_image}`} 
+                      alt="Generated Certificate" 
+                      className="max-w-full h-auto border rounded-lg shadow-sm"
+                    />
+                  </div>
+                )}
+                <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm font-medium mb-2">Credential Details:</p>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><span className="text-muted-foreground">Status:</span> {result.status}</div>
+                    <div><span className="text-muted-foreground">Student:</span> {result.metadata?.student_name}</div>
+                    <div><span className="text-muted-foreground">Institution:</span> {result.institution_name}</div>
+                    <div><span className="text-muted-foreground">Course:</span> {result.course}</div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="flex gap-2">

@@ -23,14 +23,22 @@ export default function InstitutionDashboard() {
   const [selected, setSelected] = useState<Credential | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      credentialService.getCredentialsByInstitution(user?.institution === 'Machakos University' ? 'inst-1' : 'inst-2'),
-      dashboardService.getDashboardStats('institution', user?.id),
-    ]).then(([creds, s]) => {
-      setCredentials(creds);
-      setStats(s);
+    if (user?.institutionId) {
+      Promise.all([
+        credentialService.getCredentialsByInstitution(user.institutionId),
+        dashboardService.getDashboardStats('institution', user?.id),
+      ]).then(([credsResponse, s]) => {
+        setCredentials(credsResponse.data || []); // Extract data array from response
+        setStats(s);
+        setLoading(false);
+      }).catch(error => {
+        console.error('Failed to fetch dashboard data:', error);
+        setCredentials([]);
+        setLoading(false);
+      });
+    } else {
       setLoading(false);
-    });
+    }
   }, [user]);
 
   if (loading) return <LoadingSpinner />;

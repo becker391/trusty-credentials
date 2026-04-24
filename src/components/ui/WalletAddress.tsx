@@ -1,8 +1,18 @@
 import { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 
-export function WalletAddress({ address }: { address: string }) {
+export function WalletAddress({ address }: { address?: string }) {
   const [copied, setCopied] = useState(false);
+  
+  if (!address) {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-sm font-mono text-muted-foreground">
+        <span className="h-2 w-2 rounded-full bg-muted-foreground" />
+        No wallet connected
+      </span>
+    );
+  }
+  
   const display = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   const copy = () => {

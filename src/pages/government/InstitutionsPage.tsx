@@ -14,10 +14,16 @@ export default function InstitutionsPage() {
   const [selected, setSelected] = useState<Institution | null>(null);
 
   useEffect(() => {
-    institutionService.getInstitutions().then(inst => {
-      setInstitutions(inst);
-      setLoading(false);
-    });
+    institutionService.getInstitutions()
+      .then(response => {
+        setInstitutions(response.data || []);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Failed to fetch institutions:', error);
+        setInstitutions([]);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) return <LoadingSpinner />;

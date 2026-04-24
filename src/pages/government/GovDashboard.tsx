@@ -19,9 +19,21 @@ export default function GovDashboard() {
     Promise.all([
       dashboardService.getDashboardStats('government'),
       institutionService.getInstitutions(),
-    ]).then(([s, inst]) => {
+    ]).then(([s, instResponse]) => {
       setStats(s);
-      setInstitutions(inst);
+      setInstitutions(instResponse.data || []); // Extract data array from response
+      setLoading(false);
+    }).catch(error => {
+      console.error('Failed to fetch dashboard data:', error);
+      setStats({
+        totalCredentials: 0,
+        totalInstitutions: 0,
+        totalStudents: 0,
+        totalVerifications: 0,
+        fraudPrevented: 0,
+        avgVerificationTime: 0,
+      });
+      setInstitutions([]);
       setLoading(false);
     });
   }, []);
@@ -79,7 +91,7 @@ export default function GovDashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {institutions.map(inst => (
+              {(institutions || []).map(inst => (
                 <TableRow key={inst.id}>
                   <TableCell className="font-medium">{inst.name}</TableCell>
                   <TableCell>{inst.country}</TableCell>

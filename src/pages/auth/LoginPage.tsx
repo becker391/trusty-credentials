@@ -5,20 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { GraduationCap, Wallet, Loader2, ArrowLeft } from 'lucide-react';
+import { GraduationCap, Wallet, Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import type { UserRole } from '@/types';
 import { toast } from 'sonner';
 
-const demoUsers: { role: UserRole; label: string; email: string; path: string }[] = [
-  { role: 'institution', label: 'Institution', email: 'admin@machakos.ac.ke', path: '/institution/dashboard' },
-  { role: 'student', label: 'Student', email: 'john.gachuru@student.mksu.ac.ke', path: '/student/dashboard' },
-  { role: 'employer', label: 'Employer', email: 'grace@techcorp.co.ke', path: '/verifier/dashboard' },
-  { role: 'government', label: 'Government', email: 'admin@education.go.ke', path: '/government/dashboard' },
+const demoUsers: { role: UserRole; label: string; email: string; password: string; path: string }[] = [
+  { role: 'institution', label: 'Institution', email: 'registrar@mit.edu', password: 'mit123', path: '/institution/dashboard' },
+  { role: 'student', label: 'Student', email: 'john.doe@student.mit.edu', password: 'student123', path: '/student/dashboard' },
+  { role: 'employer', label: 'Employer', email: 'hr@techcorp.com', password: 'employer123', path: '/verifier/dashboard' },
+  { role: 'government', label: 'Government', email: 'gov@education.gov', password: 'gov123', path: '/government/dashboard' },
 ];
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState<UserRole>('student');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -37,13 +38,11 @@ export default function LoginPage() {
   };
 
   const handleDemoLogin = async (d: typeof demoUsers[0]) => {
-    setLoading(true);
-    try {
-      await login(d.email, 'demo', d.role);
-      navigate(d.path);
-      toast.success(`Logged in as ${d.label}`);
-    } catch { toast.error('Login failed'); }
-    finally { setLoading(false); }
+    // Just populate the form fields instead of logging in directly
+    setEmail(d.email);
+    setPassword(d.password);
+    setActiveTab(d.role);
+    toast.info(`Demo credentials loaded for ${d.label}. Click "Sign In" to login.`);
   };
 
   return (
@@ -74,7 +73,22 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
-            <Input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+            <div className="relative">
+              <Input 
+                placeholder="Password" 
+                type={showPassword ? "text" : "password"} 
+                value={password} 
+                onChange={e => setPassword(e.target.value)}
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
             <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={loading}>
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
             </Button>
@@ -82,7 +96,7 @@ export default function LoginPage() {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-            <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-2 text-muted-foreground">Quick Demo Login</span></div>
+            <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-2 text-muted-foreground">Load Demo Credentials</span></div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">

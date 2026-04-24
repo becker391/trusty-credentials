@@ -8,6 +8,7 @@ export interface User {
   walletAddress: string;
   avatarUrl: string;
   institution?: string;
+  institutionId?: string;
 }
 
 export type CredentialStatus = 'active' | 'revoked' | 'pending';

@@ -1,20 +1,26 @@
-import { mockGetAllCredentials, mockGetCredentialById, mockGetCredentialsByStudent, mockGetCredentialsByInstitution, mockIssueCredential, mockRevokeCredential, mockVerifyCredentialByHash } from '@/api/mockApi';
+import { api } from '@/api';
 import type { Credential } from '@/types';
 
 export const getAllCredentials = (filters?: { status?: string; course?: string; institutionId?: string }) =>
-  mockGetAllCredentials(filters);
+  api.credentials.getCredentials(filters);
 
-export const getCredentialById = (id: string) => mockGetCredentialById(id);
+export const getCredentialById = (id: string) => 
+  api.credentials.getCredential(id);
 
-export const getCredentialsByStudent = (studentId: string) => mockGetCredentialsByStudent(studentId);
+export const getCredentialsByStudent = (studentId: string) => 
+  api.credentials.getStudentCredentials(studentId);
 
-export const getCredentialsByInstitution = (institutionId: string) => mockGetCredentialsByInstitution(institutionId);
+export const getCredentialsByInstitution = (institutionId: string) => 
+  api.credentials.getInstitutionCredentials(institutionId);
 
-export const issueCredential = (data: Partial<Credential>) => mockIssueCredential(data);
+export const issueCredential = (data: Partial<Credential>) => 
+  api.credentials.issueCredential(data);
 
-export const revokeCredential = (id: string, reason: string) => mockRevokeCredential(id, reason);
+export const revokeCredential = (id: string, reason: string) => 
+  api.credentials.revokeCredential(id, reason);
 
-export const verifyCredentialByHash = (hash: string) => mockVerifyCredentialByHash(hash);
+export const verifyCredentialByHash = (hash: string) => 
+  api.verification.verifyCredential(hash);
 
 export function generateCredentialHash(_data: Partial<Credential>): string {
   return Array.from({ length: 64 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');

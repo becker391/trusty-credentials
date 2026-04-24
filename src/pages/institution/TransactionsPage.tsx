@@ -6,7 +6,7 @@ import { NetworkBadge } from '@/components/blockchain/NetworkBadge';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import * as mockApi from '@/api/mockApi';
+import { api } from '@/api';
 import type { Transaction } from '@/types';
 import { Activity, ArrowUpRight, ArrowDownRight, Search } from 'lucide-react';
 
@@ -28,10 +28,26 @@ export default function TransactionsPage() {
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    mockApi.mockGetTransactions().then(txns => {
-      setTransactions(txns);
-      setLoading(false);
-    });
+    api.blockchain.getTransactions()
+      .then(txns => {
+        // Map backend transaction data to frontend format
+        const mappedTxns = txns.map((tx: any) => ({
+          id: tx.id,
+          txHash: tx.tx_hash || '0x' + Math.random().toString(16).substr(2, 64),
+          type: tx.kind, // 'issue', 'revoke', etc.
+          timestamp: tx.created_at,
+          gasUsed: tx.gas_used || 21000,
+          blockNumber: tx.block_number || 0,
+          network: 'Polygon',
+          status: tx.status,
+        }));
+        setTransactions(mappedTxns);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Failed to fetch transactions:', error);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) return <LoadingSpinner />;

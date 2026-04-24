@@ -1,21 +1,14 @@
-import {
-  mockLogin,
-  mockGetCurrentUser,
-  mockLogout,
-  mockSignup,
-  mockRequestPasswordReset,
-  mockResetPassword,
-} from '@/api/mockApi';
+import { api } from '@/api';
 import type { User, UserRole } from '@/types';
 
 export const login = (email: string, password: string, role: UserRole): Promise<User> =>
-  mockLogin(email, password, role);
+  api.auth.login(email, password, role);
 
 export const getCurrentUser = (): Promise<User | null> =>
-  mockGetCurrentUser();
+  api.auth.getCurrentUser();
 
 export const logout = (): Promise<void> =>
-  mockLogout();
+  api.auth.logout();
 
 export const signup = (data: {
   name: string;
@@ -23,10 +16,10 @@ export const signup = (data: {
   password: string;
   role: UserRole;
   institution?: string;
-}): Promise<User> => mockSignup(data);
+}): Promise<User> => api.auth.signup(data);
 
 export const requestPasswordReset = (email: string): Promise<{ sent: boolean; email: string }> =>
-  mockRequestPasswordReset(email);
+  api.auth.requestPasswordReset(email);
 
 export const resetPassword = (token: string, newPassword: string): Promise<{ success: boolean }> =>
-  mockResetPassword(token, newPassword);
+  api.auth.resetPassword(token, newPassword);

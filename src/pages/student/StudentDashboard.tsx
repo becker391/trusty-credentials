@@ -18,10 +18,20 @@ export default function StudentDashboard() {
   const [selected, setSelected] = useState<Credential | null>(null);
 
   useEffect(() => {
-    credentialService.getCredentialsByStudent(user?.id || 'user-2').then(creds => {
-      setCredentials(creds);
+    if (user?.id) {
+      credentialService.getCredentialsByStudent(user.id)
+        .then(response => {
+          setCredentials(response.data || []);
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Failed to fetch student credentials:', error);
+          setCredentials([]);
+          setLoading(false);
+        });
+    } else {
       setLoading(false);
-    });
+    }
   }, [user]);
 
   if (loading) return <LoadingSpinner />;

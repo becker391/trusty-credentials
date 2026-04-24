@@ -21,10 +21,21 @@ export default function ShareCredentialPage() {
   const [expiryDate, setExpiryDate] = useState('');
 
   useEffect(() => {
-    credentialService.getCredentialsByStudent(user?.id || 'user-2').then(creds => {
-      setCredentials(creds.filter(c => c.status === 'active'));
+    if (user?.id) {
+      credentialService.getCredentialsByStudent(user.id)
+        .then(response => {
+          const creds = response.data || [];
+          setCredentials(creds.filter(c => c.status === 'active'));
+          setLoading(false);
+        })
+        .catch(error => {
+          console.error('Failed to fetch student credentials:', error);
+          setCredentials([]);
+          setLoading(false);
+        });
+    } else {
       setLoading(false);
-    });
+    }
   }, [user]);
 
   if (loading) return <LoadingSpinner />;

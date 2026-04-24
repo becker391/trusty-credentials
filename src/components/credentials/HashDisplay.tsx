@@ -2,8 +2,18 @@ import { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-export function HashDisplay({ hash, truncate = true }: { hash: string; truncate?: boolean }) {
+export function HashDisplay({ hash, truncate = true }: { hash?: string; truncate?: boolean }) {
   const [copied, setCopied] = useState(false);
+  
+  // Handle undefined or null hash
+  if (!hash) {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+        <span className="font-mono text-xs">No hash available</span>
+      </span>
+    );
+  }
+  
   const display = truncate ? `${hash.slice(0, 8)}...${hash.slice(-8)}` : hash;
 
   const copy = () => {
