@@ -3,12 +3,13 @@ import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { HashDisplay } from '@/components/credentials/HashDisplay';
 import { BlockchainProof } from '@/components/blockchain/BlockchainProof';
 import * as credentialService from '@/services/credentialService';
 import { toast } from 'sonner';
-import { Loader2, CheckCircle2, ArrowRight, ArrowLeft, GraduationCap } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowRight, ArrowLeft, GraduationCap, Download } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 export default function IssueCredentialPage() {
@@ -82,12 +83,30 @@ export default function IssueCredentialPage() {
         <Card className="glow-card">
           <CardHeader><CardTitle className="text-sm">Step 1 — Student Information</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <Input placeholder="Student Name" value={form.studentName} onChange={e => update('studentName', e.target.value)} />
-            <Input placeholder="Student ID" value={form.studentId} onChange={e => update('studentId', e.target.value)} />
-            <Input placeholder="Email" type="email" value={form.studentEmail} onChange={e => update('studentEmail', e.target.value)} />
-            <Input placeholder="Course" value={form.course} onChange={e => update('course', e.target.value)} />
-            <Input placeholder="Grade" value={form.grade} onChange={e => update('grade', e.target.value)} />
-            <Input placeholder="Graduation Date" type="date" value={form.graduationDate} onChange={e => update('graduationDate', e.target.value)} />
+            <div className="space-y-2">
+              <Label htmlFor="studentName">Student Name</Label>
+              <Input id="studentName" placeholder="e.g. Jane Doe" value={form.studentName} onChange={e => update('studentName', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="studentId">Student ID</Label>
+              <Input id="studentId" placeholder="e.g. MIT-2024-001" value={form.studentId} onChange={e => update('studentId', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="studentEmail">Email</Label>
+              <Input id="studentEmail" placeholder="student@example.edu" type="email" value={form.studentEmail} onChange={e => update('studentEmail', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="course">Course</Label>
+              <Input id="course" placeholder="e.g. BSc Computer Science" value={form.course} onChange={e => update('course', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="grade">Grade</Label>
+              <Input id="grade" placeholder="e.g. First Class Honours" value={form.grade} onChange={e => update('grade', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="graduationDate">Graduation Date</Label>
+              <Input id="graduationDate" type="date" value={form.graduationDate} onChange={e => update('graduationDate', e.target.value)} />
+            </div>
             <Button onClick={() => setStep(2)} disabled={!form.studentName || !form.course} className="bg-accent text-accent-foreground hover:bg-accent/90">
               Next <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
