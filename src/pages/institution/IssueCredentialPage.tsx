@@ -184,11 +184,40 @@ export default function IssueCredentialPage() {
                 </div>
                 <HashDisplay hash={result.credential_hash_hex} truncate={false} />
                 {result.certificate_image && (
-                  <div className="mt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Generated Certificate:</p>
-                    <img 
-                      src={`http://127.0.0.1:8000${result.certificate_image}`} 
-                      alt="Generated Certificate" 
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground">Generated Certificate:</p>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={async () => {
+                          const imgUrl = `http://127.0.0.1:8000${result.certificate_image}`;
+                          try {
+                            const res = await fetch(imgUrl);
+                            const blob = await res.blob();
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            const studentSlug = (form.studentName || 'certificate').replace(/\s+/g, '_');
+                            a.download = `${studentSlug}_certificate.png`;
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                            URL.revokeObjectURL(url);
+                            toast.success('Certificate downloaded');
+                          } catch {
+                            // Fallback: open in new tab
+                            window.open(imgUrl, '_blank');
+                            toast.error('Could not auto-download. Opened image in a new tab.');
+                          }
+                        }}
+                      >
+                        <Download className="h-4 w-4 mr-1" /> Download
+                      </Button>
+                    </div>
+                    <img
+                      src={`http://127.0.0.1:8000${result.certificate_image}`}
+                      alt="Generated Certificate"
                       className="max-w-full h-auto border rounded-lg shadow-sm"
                     />
                   </div>
