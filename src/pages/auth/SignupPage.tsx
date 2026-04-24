@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { GraduationCap, Wallet, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import type { UserRole } from '@/types';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signup } from '@/services/authService';
+import { institutionsApi } from '@/api/api';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -20,7 +21,14 @@ export default function SignupPage() {
   const [role, setRole] = useState<UserRole>('student');
   const [institution, setInstitution] = useState('');
   const [loading, setLoading] = useState(false);
+  const [institutions, setInstitutions] = useState<{ id: string; name: string }[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    institutionsApi.getInstitutions()
+      .then(res => setInstitutions(res.data))
+      .catch(() => {});
+  }, []);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,8 +141,15 @@ export default function SignupPage() {
             </div>
             {(role === 'student' || role === 'institution') && (
               <div className="space-y-2">
-                <Label htmlFor="institution">Institution Name</Label>
-                <Input id="institution" placeholder="e.g. Machakos University" value={institution} onChange={e => setInstitution(e.target.value)} />
+                <Label>Institution</Label>
+                <Select value={institution} onValueChange={setInstitution}>
+                  <SelectTrigger><SelectValue placeholder="Select institution" /></SelectTrigger>
+                  <SelectContent>
+                    {institutions.map(inst => (
+                      <SelectItem key={inst.id} value={inst.id}>{inst.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
             <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={loading}>

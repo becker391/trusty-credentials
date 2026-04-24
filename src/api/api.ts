@@ -6,17 +6,20 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
 // Helper function to make API calls
-async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function apiCall<T>(
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   const defaultHeaders = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   // Add auth token if available
-  const token = localStorage.getItem('auth_token');
+  const token = localStorage.getItem("auth_token");
   if (token) {
-    defaultHeaders['Authorization'] = `Token ${token}`;
+    defaultHeaders["Authorization"] = `Token ${token}`;
   }
 
   const config: RequestInit = {
@@ -29,14 +32,16 @@ async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<
 
   try {
     const response = await fetch(url, config);
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      throw new Error(
+        errorData.error || `HTTP ${response.status}: ${response.statusText}`,
+      );
     }
 
     const data = await response.json();
-    return data.data || data; // Handle both {data: ...} and direct responses
+    return data;
   } catch (error) {
     console.error(`API call failed: ${endpoint}`, error);
     throw error;
@@ -49,29 +54,33 @@ export const authApi = {
     const body: any = { email, password };
     // Only include role if it's provided and we want to filter by it
     // For now, let's not filter by role to avoid the error
-    
-    const response = await apiCall<any>('/auth/login/', {
-      method: 'POST',
+
+    const response = await apiCall<any>("/auth/login/", {
+      method: "POST",
       body: JSON.stringify(body),
     });
-    
+    const user = response.data || response;
+
     // Store token for future requests
-    if (response.token) {
-      localStorage.setItem('auth_token', response.token);
+    if (user.token) {
+      localStorage.setItem("auth_token", user.token);
     }
-    
+
     // Map backend user response to frontend user type
     const mappedUser = {
-      id: response.id,
-      name: `${response.first_name} ${response.last_name}`.trim(),
-      email: response.email,
-      role: response.roles?.[0]?.role || 'student', // Get first role
-      walletAddress: '', // Will be populated later if needed
-      avatarUrl: response.avatar_url || '',
-      institution: response.roles?.[0]?.role === 'institution' ? 'Massachusetts Institute of Technology' : undefined,
-      institutionId: response.roles?.[0]?.scope_id || undefined, // Add institution ID from role scope
+      id: user.id,
+      name: `${user.first_name} ${user.last_name}`.trim(),
+      email: user.email,
+      role: user.roles?.[0]?.role || "student", // Get first role
+      walletAddress: "", // Will be populated later if needed
+      avatarUrl: user.avatar_url || "",
+      institution:
+        user.roles?.[0]?.role === "institution"
+          ? "Massachusetts Institute of Technology"
+          : undefined,
+      institutionId: user.roles?.[0]?.scope_id || undefined, // Add institution ID from role scope
     };
-    
+
     return mappedUser;
   },
 
@@ -82,75 +91,80 @@ export const authApi = {
     role: string;
     institution?: string;
   }) {
-    const [firstName, ...lastNameParts] = data.name.split(' ');
-    const lastName = lastNameParts.join(' ');
-    
-    const response = await apiCall<any>('/auth/signup/', {
-      method: 'POST',
+    const [firstName, ...lastNameParts] = data.name.split(" ");
+    const lastName = lastNameParts.join(" ");
+
+    const response = await apiCall<any>("/auth/signup/", {
+      method: "POST",
       body: JSON.stringify({
         email: data.email,
-        username: data.email.split('@')[0],
+        username: data.email.split("@")[0],
         first_name: firstName,
         last_name: lastName,
         password: data.password,
         role: data.role,
       }),
     });
-    
-    if (response.token) {
-      localStorage.setItem('auth_token', response.token);
+    const user = response.data || response;
+
+    if (user.token) {
+      localStorage.setItem("auth_token", user.token);
     }
-    
+
     // Map backend user response to frontend user type
     const mappedUser = {
-      id: response.id,
-      name: `${response.first_name} ${response.last_name}`.trim(),
-      email: response.email,
-      role: response.roles?.[0]?.role || data.role,
-      walletAddress: '',
-      avatarUrl: response.avatar_url || '',
+      id: user.id,
+      name: `${user.first_name} ${user.last_name}`.trim(),
+      email: user.email,
+      role: user.roles?.[0]?.role || data.role,
+      walletAddress: "",
+      avatarUrl: user.avatar_url || "",
       institution: data.institution,
     };
-    
+
     return mappedUser;
   },
 
   async getCurrentUser() {
-    const response = await apiCall<any>('/auth/me/');
-    
+    const response = await apiCall<any>("/auth/me/");
+    const user = response.data || response;
+
     // Map backend user response to frontend user type
     const mappedUser = {
-      id: response.id,
-      name: `${response.first_name} ${response.last_name}`.trim(),
-      email: response.email,
-      role: response.roles?.[0]?.role || 'student', // Get first role
-      walletAddress: '', // Will be populated later if needed
-      avatarUrl: response.avatar_url || '',
-      institution: response.roles?.[0]?.role === 'institution' ? 'Massachusetts Institute of Technology' : undefined,
-      institutionId: response.roles?.[0]?.scope_id || undefined, // Add institution ID from role scope
+      id: user.id,
+      name: `${user.first_name} ${user.last_name}`.trim(),
+      email: user.email,
+      role: user.roles?.[0]?.role || "student", // Get first role
+      walletAddress: "", // Will be populated later if needed
+      avatarUrl: user.avatar_url || "",
+      institution:
+        user.roles?.[0]?.role === "institution"
+          ? "Massachusetts Institute of Technology"
+          : undefined,
+      institutionId: user.roles?.[0]?.scope_id || undefined, // Add institution ID from role scope
     };
-    
+
     return mappedUser;
   },
 
   async logout() {
     try {
-      await apiCall('/auth/logout/', { method: 'POST' });
+      await apiCall("/auth/logout/", { method: "POST" });
     } finally {
-      localStorage.removeItem('auth_token');
+      localStorage.removeItem("auth_token");
     }
   },
 
   async requestPasswordReset(email: string) {
-    return await apiCall<any>('/auth/forgot-password/', {
-      method: 'POST',
+    return await apiCall<any>("/auth/forgot-password/", {
+      method: "POST",
       body: JSON.stringify({ email }),
     });
   },
 
   async resetPassword(token: string, newPassword: string) {
-    return await apiCall<any>('/auth/reset-password/', {
-      method: 'POST',
+    return await apiCall<any>("/auth/reset-password/", {
+      method: "POST",
       body: JSON.stringify({ token, password: newPassword }),
     });
   },
@@ -239,10 +253,11 @@ export const credentialsApi = {
 
     console.log('Sending credential data:', backendData);
 
-    return await apiCall<any>('/credentials/', {
+    const response = await apiCall<any>('/credentials/', {
       method: 'POST',
       body: JSON.stringify(backendData),
     });
+    return response.data ?? response;
   },
 
   async revokeCredential(id: string, reason: string) {

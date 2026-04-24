@@ -59,6 +59,7 @@ export default function IssueCredentialPage() {
         institutionId: 'e56b14fc-f13a-4a35-9d3e-be6114660540', // MIT ID from backend
       } as any); // Use 'as any' to bypass type checking for now
       setResult(cred);
+      setHashDisplay(cred.credential_hash_hex || "");
       toast.success('Credential issued successfully!');
     } catch { toast.error('Failed to issue credential'); }
     finally { setLoading(false); }
