@@ -22,6 +22,9 @@ export const revokeCredential = (id: string, reason: string) =>
 export const verifyCredentialByHash = (hash: string) => 
   api.verification.verifyCredential(hash);
 
+export const verifyCredentialByFile = (file: File) => 
+  api.verification.verifyCredentialFile(file);
+
 export function generateCredentialHash(_data: Partial<Credential>): string {
   return Array.from({ length: 64 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
 }

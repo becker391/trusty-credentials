@@ -6,11 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { HashDisplay } from '@/components/credentials/HashDisplay';
-import { BlockchainProof } from '@/components/blockchain/BlockchainProof';
 import * as credentialService from '@/services/credentialService';
 import { toast } from 'sonner';
-import { Loader2, CheckCircle2, ArrowRight, ArrowLeft, GraduationCap, Download } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowRight, ArrowLeft, GraduationCap, Download, FileText, ExternalLink } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { BACKEND_URL } from '../../api/api'
 
 export default function IssueCredentialPage() {
   const { user } = useAuth();
@@ -184,43 +184,72 @@ export default function IssueCredentialPage() {
                   <span className="font-semibold">Credential Published Successfully!</span>
                 </div>
                 <HashDisplay hash={result.credential_hash_hex} truncate={false} />
-                {result.certificate_image && (
-                  <div className="mt-4 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-muted-foreground">Generated Certificate:</p>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={async () => {
-                          const imgUrl = `http://127.0.0.1:8000${result.certificate_image}`;
-                          try {
-                            const res = await fetch(imgUrl);
-                            const blob = await res.blob();
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            const studentSlug = (form.studentName || 'certificate').replace(/\s+/g, '_');
-                            a.download = `${studentSlug}_certificate.png`;
-                            document.body.appendChild(a);
-                            a.click();
-                            a.remove();
-                            URL.revokeObjectURL(url);
-                            toast.success('Certificate downloaded');
-                          } catch {
-                            // Fallback: open in new tab
-                            window.open(imgUrl, '_blank');
-                            toast.error('Could not auto-download. Opened image in a new tab.');
-                          }
-                        }}
-                      >
-                        <Download className="h-4 w-4 mr-1" /> Download
-                      </Button>
+                {result.certificate_pdf && (
+                  <div className="mt-4 space-y-4">
+                    <div className="flex items-center justify-between p-4 border border-accent/20 rounded-lg bg-accent/5">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-8 w-8 text-accent" />
+                        <div>
+                          <p className="font-medium text-sm">Certificate PDF Generated</p>
+                          <p className="text-xs text-muted-foreground">
+                            {form.studentName.replace(/\s+/g, '_')}_certificate.pdf
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const pdfUrl = `http://127.0.0.1:8000${result.certificate_pdf}`;
+                            window.open(pdfUrl, '_blank');
+                          }}
+                        >
+                          <ExternalLink className="h-4 w-4 mr-1" /> View
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={async () => {
+                            const pdfUrl = `http://127.0.0.1:8000${result.certificate_pdf}`;
+                            try {
+                              const res = await fetch(pdfUrl);
+                              const blob = await res.blob();
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              const studentSlug = (form.studentName || 'certificate').replace(/\s+/g, '_');
+                              a.download = `${studentSlug}_certificate.pdf`;
+                              document.body.appendChild(a);
+                              a.click();
+                              a.remove();
+                              URL.revokeObjectURL(url);
+                              toast.success('Certificate PDF downloaded');
+                            } catch (error) {
+                              console.error('Download failed:', error);
+                              // Fallback: open in new tab
+                              window.open(pdfUrl, '_blank');
+                              toast.error('Could not auto-download. Opened PDF in a new tab.');
+                            }
+                          }}
+                        >
+                          <Download className="h-4 w-4 mr-1" /> Download
+                        </Button>
+                      </div>
                     </div>
-                    <img
-                      src={`http://127.0.0.1:8000${result.certificate_image}`}
-                      alt="Generated Certificate"
-                      className="max-w-full h-auto border rounded-lg shadow-sm"
-                    />
+                    
+                    {/* PDF Preview using iframe */}
+                    <div className="border rounded-lg overflow-hidden">
+                      <div className="bg-muted/30 px-4 py-2 border-b">
+                        <p className="text-sm font-medium">Certificate Preview</p>
+                      </div>
+                      <div className="p-4">
+                        <iframe
+                          src={`http://127.0.0.1:8000${result.certificate_pdf}`}
+                          className="w-full h-96 border rounded"
+                          title="Certificate PDF Preview"
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
                 <div className="mt-4 p-4 bg-muted/50 rounded-lg">

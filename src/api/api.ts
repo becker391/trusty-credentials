@@ -3,7 +3,10 @@
  * This replaces the mock API with actual backend calls
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
+
+export const API_BASE_URL = BACKEND_URL + '/api';
+
 
 // Helper function to make API calls
 async function apiCall<T>(
@@ -203,6 +206,8 @@ export const credentialsApi = {
       nftTokenId: cred.nft_token_id,
       ipfsUrl: cred.ipfs_cid ? `https://ipfs.io/ipfs/${cred.ipfs_cid}` : undefined,
       issuedBy: cred.issued_by_email || 'Unknown',
+      certificate_image: cred.certificate_image,
+      certificate_pdf: cred.certificate_pdf,
     }));
     
     return { data: mappedCredentials };
@@ -232,6 +237,8 @@ export const credentialsApi = {
       nftTokenId: cred.nft_token_id,
       ipfsUrl: cred.ipfs_cid ? `https://ipfs.io/ipfs/${cred.ipfs_cid}` : undefined,
       issuedBy: cred.issued_by_email || 'Unknown',
+      certificate_image: cred.certificate_image,
+      certificate_pdf: cred.certificate_pdf,
     };
     
     return { data: mappedCredential };
@@ -290,6 +297,8 @@ export const credentialsApi = {
       nftTokenId: cred.nft_token_id,
       ipfsUrl: cred.ipfs_cid ? `https://ipfs.io/ipfs/${cred.ipfs_cid}` : undefined,
       issuedBy: cred.issued_by_email || 'Unknown',
+      certificate_image: cred.certificate_image,
+      certificate_pdf: cred.certificate_pdf,
     }));
     
     return { data: mappedCredentials };
@@ -318,6 +327,8 @@ export const credentialsApi = {
       nftTokenId: cred.nft_token_id,
       ipfsUrl: cred.ipfs_cid ? `https://ipfs.io/ipfs/${cred.ipfs_cid}` : undefined,
       issuedBy: cred.issued_by_email || 'Unknown',
+      certificate_image: cred.certificate_image,
+      certificate_pdf: cred.certificate_pdf,
     }));
     
     return { data: mappedCredentials };
@@ -327,10 +338,105 @@ export const credentialsApi = {
 // Verification API
 export const verificationApi = {
   async verifyCredential(hash: string) {
-    return await apiCall<any>('/verify/', {
+    const response = await apiCall<any>('/verify/', {
       method: 'POST',
       body: JSON.stringify({ credential_hash: hash }),
     });
+    
+    // Map backend response to frontend format
+    const backendData = response.data;
+    const mappedResponse = {
+      valid: backendData.valid,
+      result: backendData.result,
+      message: backendData.valid 
+        ? 'Credential is valid and verified on the blockchain' 
+        : backendData.result === 'revoked' 
+          ? 'Credential has been revoked' 
+          : 'Credential verification failed',
+      credential: backendData.credential ? {
+        id: backendData.credential.id,
+        studentId: backendData.credential.student,
+        studentName: backendData.credential.metadata?.student_name || 'Unknown Student',
+        institutionId: backendData.credential.institution,
+        institutionName: backendData.credential.institution_name,
+        certificateType: backendData.credential.certificate_type,
+        course: backendData.credential.course,
+        grade: backendData.credential.grade,
+        issueDate: backendData.credential.issue_date,
+        expiryDate: backendData.credential.expiry_date,
+        credentialHash: backendData.credential.credential_hash_hex,
+        txHash: backendData.credential.tx_hash || '',
+        blockNumber: backendData.credential.block_number || 0,
+        networkName: 'Polygon',
+        status: backendData.credential.status,
+        nftTokenId: backendData.credential.nft_token_id,
+        ipfsUrl: backendData.credential.ipfs_cid ? `https://ipfs.io/ipfs/${backendData.credential.ipfs_cid}` : undefined,
+        issuedBy: backendData.credential.issued_by_email || 'Unknown',
+      } : null,
+      responseTime: backendData.response_ms,
+      cached: backendData.cached,
+    };
+    
+    return mappedResponse;
+  },
+
+  async verifyCredentialFile(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_BASE_URL}/verify/file/`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        // Don't set Content-Type for FormData, let browser set it with boundary
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.error || `HTTP ${response.status}: ${response.statusText}`,
+      );
+    }
+
+    const data = await response.json();
+    
+    // Map backend response to frontend format
+    const backendData = data.data;
+    const mappedResponse = {
+      valid: backendData.valid,
+      result: backendData.result,
+      message: backendData.valid 
+        ? 'Credential is valid and verified on the blockchain' 
+        : backendData.result === 'revoked' 
+          ? 'Credential has been revoked' 
+          : 'Credential verification failed',
+      credential: backendData.credential ? {
+        id: backendData.credential.id,
+        studentId: backendData.credential.student,
+        studentName: backendData.credential.metadata?.student_name || 'Unknown Student',
+        institutionId: backendData.credential.institution,
+        institutionName: backendData.credential.institution_name,
+        certificateType: backendData.credential.certificate_type,
+        course: backendData.credential.course,
+        grade: backendData.credential.grade,
+        issueDate: backendData.credential.issue_date,
+        expiryDate: backendData.credential.expiry_date,
+        credentialHash: backendData.credential.credential_hash_hex,
+        txHash: backendData.credential.tx_hash || '',
+        blockNumber: backendData.credential.block_number || 0,
+        networkName: 'Polygon',
+        status: backendData.credential.status,
+        nftTokenId: backendData.credential.nft_token_id,
+        ipfsUrl: backendData.credential.ipfs_cid ? `https://ipfs.io/ipfs/${backendData.credential.ipfs_cid}` : undefined,
+        issuedBy: backendData.credential.issued_by_email || 'Unknown',
+      } : null,
+      responseTime: backendData.response_ms,
+      cached: backendData.cached,
+      extractedHash: backendData.extracted_hash,
+    };
+    
+    return mappedResponse;
   },
 
   async getVerificationHistory() {
