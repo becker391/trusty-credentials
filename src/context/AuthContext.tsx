@@ -25,7 +25,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string, role: UserRole) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   role: UserRole | null;
 }
@@ -42,8 +42,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const login = useCallback(async (email: string, password: string, role: UserRole) => {
-    const user = await authService.login(email, password, role);
+  const login = useCallback(async (email: string, password: string) => {
+    const user = await authService.login(email, password);
     dispatch({ type: 'LOGIN_SUCCESS', user });
   }, []);
 

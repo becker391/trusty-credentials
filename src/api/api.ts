@@ -3,9 +3,10 @@
  * This replaces the mock API with actual backend calls
  */
 
-const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const API_BASE_URL = BACKEND_URL + '/api';
+export const BACKEND_URL = import.meta.env.VITE_API_BASE_URL;
+
+const API_BASE_URL = BACKEND_URL + '/api';
 
 
 // Helper function to make API calls
@@ -53,10 +54,8 @@ async function apiCall<T>(
 
 // Auth API
 export const authApi = {
-  async login(email: string, password: string, role?: string) {
-    const body: any = { email, password };
-    // Only include role if it's provided and we want to filter by it
-    // For now, let's not filter by role to avoid the error
+  async login(email: string, password: string) {
+    const body = { email, password };
 
     const response = await apiCall<any>("/auth/login/", {
       method: "POST",

@@ -1,8 +1,8 @@
 import { api } from '@/api';
 import type { User, UserRole } from '@/types';
 
-export const login = (email: string, password: string, role: UserRole): Promise<User> =>
-  api.auth.login(email, password, role);
+export const login = (email: string, password: string): Promise<User> =>
+  api.auth.login(email, password);
 
 export const getCurrentUser = (): Promise<User | null> =>
   api.auth.getCurrentUser();

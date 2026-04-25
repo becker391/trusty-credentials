@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { GraduationCap, Wallet, Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { GraduationCap, Loader2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import type { UserRole } from '@/types';
 import { toast } from 'sonner';
 
@@ -17,11 +16,23 @@ const demoUsers: { role: UserRole; label: string; email: string; password: strin
   { role: 'government', label: 'Government', email: 'gov@education.gov', password: 'gov123', path: '/government/dashboard' },
 ];
 
+// Helper function to get dashboard path based on role
+const getDashboardPath = (role: UserRole): string => {
+  const rolePathMap: Record<UserRole, string> = {
+    institution: '/institution/dashboard',
+    student: '/student/dashboard',
+    employer: '/verifier/dashboard',
+    government: '/government/dashboard',
+    verifier: '/verifier/dashboard',
+    admin: '/government/dashboard', // Admin uses government dashboard
+  };
+  return rolePathMap[role] || '/student/dashboard';
+};
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<UserRole>('student');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -30,19 +41,23 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password, activeTab);
-      const target = demoUsers.find(d => d.role === activeTab)?.path || '/';
-      navigate(target);
+      await login(email, password);
+      
+      // Navigate to the dashboard redirect page which will determine the correct dashboard
+      navigate('/dashboard-redirect');
       toast.success('Logged in successfully');
-    } catch { toast.error('Login failed'); }
-    finally { setLoading(false); }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDemoLogin = async (d: typeof demoUsers[0]) => {
     // Just populate the form fields instead of logging in directly
     setEmail(d.email);
     setPassword(d.password);
-    setActiveTab(d.role);
     toast.info(`Demo credentials loaded for ${d.label}. Click "Sign In" to login.`);
   };
 
@@ -64,14 +79,6 @@ export default function LoginPage() {
           <p className="text-sm text-muted-foreground">Decentralized Academic Credential System</p>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs value={activeTab} onValueChange={v => setActiveTab(v as UserRole)}>
-            <TabsList className="grid grid-cols-4 w-full">
-              {demoUsers.map(d => (
-                <TabsTrigger key={d.role} value={d.role} className="text-xs">{d.label}</TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="login-email">Email Address</Label>
@@ -115,10 +122,6 @@ export default function LoginPage() {
               </Button>
             ))}
           </div>
-
-          <Button variant="outline" className="w-full" disabled>
-            <Wallet className="h-4 w-4 mr-2" /> Connect Wallet (Coming Soon)
-          </Button>
 
           <div className="text-center text-sm text-muted-foreground space-y-2">
             <p>

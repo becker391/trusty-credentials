@@ -18,6 +18,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import SignupPage from "./pages/auth/SignupPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import DashboardRedirect from "./pages/DashboardRedirect";
 import InstitutionDashboard from "./pages/institution/InstitutionDashboard";
 import IssueCredentialPage from "./pages/institution/IssueCredentialPage";
 import ManageCredentialsPage from "./pages/institution/ManageCredentialsPage";
@@ -67,6 +68,9 @@ function AppRoutes() {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+      {/* Dashboard redirect - redirects to appropriate dashboard based on user role */}
+      <Route path="/dashboard-redirect" element={<DashboardRedirect />} />
 
       {/* Public credential detail */}
       <Route path="/credential/:id" element={<CredentialDetailPage />} />

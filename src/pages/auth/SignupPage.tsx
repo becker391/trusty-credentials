@@ -162,10 +162,6 @@ export default function SignupPage() {
             <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-2 text-muted-foreground">or</span></div>
           </div>
 
-          <Button variant="outline" className="w-full" disabled>
-            <Wallet className="h-4 w-4 mr-2" /> Connect Wallet (Coming Soon)
-          </Button>
-
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <Link to="/login" className="text-accent hover:underline font-medium">Sign in</Link>

@@ -6,11 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { HashDisplay } from '@/components/credentials/HashDisplay';
+import { BACKEND_URL } from '../../api/api';
 import * as credentialService from '@/services/credentialService';
 import { toast } from 'sonner';
 import { Loader2, CheckCircle2, ArrowRight, ArrowLeft, GraduationCap, Download, FileText, ExternalLink } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { BACKEND_URL } from '../../api/api'
 
 export default function IssueCredentialPage() {
   const { user } = useAuth();
@@ -201,7 +201,7 @@ export default function IssueCredentialPage() {
                           size="sm"
                           variant="outline"
                           onClick={() => {
-                            const pdfUrl = `http://127.0.0.1:8000${result.certificate_pdf}`;
+                            const pdfUrl = `${BACKEND_URL}${result.certificate_pdf}`;
                             window.open(pdfUrl, '_blank');
                           }}
                         >
@@ -210,7 +210,7 @@ export default function IssueCredentialPage() {
                         <Button
                           size="sm"
                           onClick={async () => {
-                            const pdfUrl = `http://127.0.0.1:8000${result.certificate_pdf}`;
+                            const pdfUrl = `${BACKEND_URL}${result.certificate_pdf}`;
                             try {
                               const res = await fetch(pdfUrl);
                               const blob = await res.blob();
@@ -244,7 +244,7 @@ export default function IssueCredentialPage() {
                       </div>
                       <div className="p-4">
                         <iframe
-                          src={`http://127.0.0.1:8000${result.certificate_pdf}`}
+                          src={`${BACKEND_URL}${result.certificate_pdf}`}
                           className="w-full h-96 border rounded"
                           title="Certificate PDF Preview"
                         />
